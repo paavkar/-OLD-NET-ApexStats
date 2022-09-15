@@ -50,7 +50,7 @@ namespace NET_Apex_Stats.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<object>> Login(UserDto request)
         {
             var username = request.Username;
             var password = request.Password;
@@ -59,13 +59,13 @@ namespace NET_Apex_Stats.Controllers
             user = await _mongoDBService.GetUserAsync(username);
             if (user != null)
             {
-                //user = enumerable.First();
                 if (user.Username != request.Username || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 {
                     return Unauthorized("invalid username or password");
                 }
                 string token = CreateToken(user);
-                return token;
+
+                return Ok(new { token, username });
             }
             return Unauthorized("invalid username or password");
         }
@@ -75,7 +75,8 @@ namespace NET_Apex_Stats.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Sid, user.Id)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -88,7 +89,6 @@ namespace NET_Apex_Stats.Controllers
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
             return jwt;
         }
     }

@@ -20,20 +20,20 @@ builder.Services.AddCors(options =>
         .AllowAnyOrigin();
     });
 });
-//.WithOrigins("http://localhost:44484", "https://apex-stats.azurewebsites.net/")
+
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication(x =>
+builder.Services.AddAuthentication(options =>
 {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
 {
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -42,8 +42,6 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
-
-
 
 var app = builder.Build();
 
@@ -60,7 +58,6 @@ app.UseAuthorization();
 app.UseCors("CORSPolicy");
 app.UseStaticFiles();
 app.UseRouting();
-
 
 app.MapControllerRoute(
     name: "default",

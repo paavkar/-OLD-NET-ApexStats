@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NET_Apex_Stats.Services;
 using NET_Apex_Stats.Models;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,14 +12,12 @@ namespace NET_Apex_Stats.Controllers
     [ApiController]
     public class BattleRoyaleController : ControllerBase
     {
-
         private readonly MongoDBService _mongoDBService;
 
         public BattleRoyaleController(MongoDBService mongoDBService)
         {
             _mongoDBService = mongoDBService;
         }
-
 
         // GET: api/<BattleRoyaleController>
         [HttpGet]
