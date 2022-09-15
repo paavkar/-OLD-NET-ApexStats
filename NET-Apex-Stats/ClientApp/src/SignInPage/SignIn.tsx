@@ -47,7 +47,7 @@ const setToken = (newToken: string) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const { data: user } = await axios.post<User>(`${apiBaseUrl}/login`, { username: data.get('username'), password: data.get('password') });
+      const { data: user } = await axios.post<User>(`${apiBaseUrl}/Auth/login`, { username: data.get('username'), password: data.get('password') });
       dispatch({ type: "SET_USER", payload: user});
       setToken(user.token);
       window.localStorage.setItem(

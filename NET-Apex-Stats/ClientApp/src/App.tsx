@@ -38,12 +38,12 @@ React.useEffect(() => {
 }, [dispatch]);
 
   React.useEffect(() => {
-    void axios.get<void>(`${apiBaseUrl}/ping`);
+    //void axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchEntryList = async () => {
       try {
         const { data: entryListFromApi } = await axios.get<Entry[]>(
-          `${apiBaseUrl}/br`, { headers: { Authorization: `${token}` },}
+          `${apiBaseUrl}/BattleRoyale`, { headers: { Authorization: `${token}` },}
         );
         dispatch({ type: "SET_ENTRY_LIST", payload: entryListFromApi });
       } catch (e) {

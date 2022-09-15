@@ -1,84 +1,59 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using NET_Apex_Stats.Services;
+using NET_Apex_Stats.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace NET_Apex_Stats.Controllers
 {
-    
-    public class BattleRoyaleController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BattleRoyaleController : ControllerBase
     {
-        // GET: HomeController
-        public ActionResult Index()
+
+        private readonly MongoDBService _mongoDBService;
+
+        public BattleRoyaleController(MongoDBService mongoDBService)
         {
-            return View();
+            _mongoDBService = mongoDBService;
         }
 
-        // GET: HomeController/Details/5
-        public ActionResult Details(int id)
+
+        // GET: api/<BattleRoyaleController>
+        [HttpGet]
+        public async Task<List<BattleRoyale>> Get()
         {
-            return View();
+            return await _mongoDBService.GetAsync();
         }
 
-        // GET: HomeController/Create
-        public ActionResult Create()
+        // GET api/<BattleRoyaleController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
         {
-            return View();
+            return "value";
         }
 
-        // POST: HomeController/Create
+        // POST api/<BattleRoyaleController>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Post([FromBody] BattleRoyale battleRoyale)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _mongoDBService.CreateAsync(battleRoyale);
+            return CreatedAtAction(nameof(Get), new { id = battleRoyale.Id, battleRoyale });
         }
 
-        // GET: HomeController/Edit/5
-        public ActionResult Edit(int id)
+        // PUT api/<BattleRoyaleController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
         {
-            return View();
         }
 
-        // POST: HomeController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // DELETE api/<BattleRoyaleController>/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: HomeController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: HomeController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _mongoDBService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

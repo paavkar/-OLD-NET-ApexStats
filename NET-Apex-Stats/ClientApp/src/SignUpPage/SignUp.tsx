@@ -40,7 +40,7 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const { data: user } = await axios.post<User>(`${apiBaseUrl}/users`, { username: data.get('username'), password: data.get('password') });
+      const { data: user } = await axios.post<User>(`${apiBaseUrl}/Auth/register`, { username: data.get('username'), password: data.get('password') });
       dispatch({ type: "REGISTER_USER", payload: user});
     } catch (e) {
       console.error(e);
