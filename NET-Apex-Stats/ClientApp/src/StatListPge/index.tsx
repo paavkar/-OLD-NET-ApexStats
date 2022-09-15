@@ -28,7 +28,7 @@ const StatListPage = () => {
   const submitNewEntry = async (values: EntryFormValues) => {
     try {
       const { data: newEntry } = await axios.post<Entry>(
-        `${apiBaseUrl}/br`,
+        `${apiBaseUrl}/BattleRoyale`,
         values, { headers: { Authorization: `bearer ${user.token}` },}
       );
       dispatch({ type: "ADD_ENTRY", payload: newEntry });
