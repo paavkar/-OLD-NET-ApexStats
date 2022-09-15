@@ -29,13 +29,7 @@ namespace NET_Apex_Stats.Controllers
             string username = request.Username;
             string password = request.Password;
             User? existingUser = null;
-            var asyncCursor = await _mongoDBService.GetUserAsync(username);
-            var enumerable = asyncCursor.Current;
-            if(enumerable != null)
-            {
-                existingUser = enumerable.First();
-            }
-            
+            existingUser = await _mongoDBService.GetUserAsync(username);
             if(existingUser != null)
             {
                 return BadRequest("Username must be unique");
@@ -44,8 +38,6 @@ namespace NET_Apex_Stats.Controllers
             int saltRounds = 10;
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password, saltRounds);
-
-            
 
             var user = new User(
                 username,
@@ -62,16 +54,13 @@ namespace NET_Apex_Stats.Controllers
         {
             var username = request.Username;
             var password = request.Password;
-            Console.WriteLine(username + " " + password);
 
-            //User? user = null;
-            var asyncCursor = await _mongoDBService.GetUserAsync(username);
-            var enumerable = asyncCursor.Current;
-            Console.WriteLine(""+enumerable);
-            if (enumerable != null)
+            User? user = null;
+            user = await _mongoDBService.GetUserAsync(username);
+            if (user != null)
             {
-                User user = enumerable.First();
-                if (user.Username != request.Username || BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+                //user = enumerable.First();
+                if (user.Username != request.Username || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 {
                     return Unauthorized("invalid username or password");
                 }

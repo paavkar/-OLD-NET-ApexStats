@@ -31,11 +31,12 @@ namespace NET_Apex_Stats.Services
         }
 
 
-        public async Task<IAsyncCursor<User>> GetUserAsync(string username)
+        public async Task<User> GetUserAsync(string username)
         {
             FilterDefinition<User> filter = Builders<User>.Filter.Eq("Username", username);
-            var user = await _userCollection.FindAsync(filter);
-            return user;
+            var user = _userCollection.Find(filter);
+            var user2 = await user.SingleOrDefaultAsync();
+            return user2;
         }
 
         public async Task<List<BattleRoyale>> GetAsync()
