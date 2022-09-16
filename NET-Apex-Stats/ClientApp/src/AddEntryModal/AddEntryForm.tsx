@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Button } from "@mui/material";
 import { Field, Formik, Form } from "formik";
 
-import { TextField, NumberField } from "./FormField";
+import { TextField } from "./FormField";
 import { Entry } from "../types";
 
 /*

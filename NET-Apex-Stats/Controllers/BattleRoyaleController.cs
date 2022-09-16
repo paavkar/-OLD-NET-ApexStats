@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using NET_Apex_Stats.Services;
 using NET_Apex_Stats.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver.Linq;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,17 +18,22 @@ namespace NET_Apex_Stats.Controllers
     public class BattleRoyaleController : ControllerBase
     {
         private readonly MongoDBService _mongoDBService;
+        private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BattleRoyaleController(MongoDBService mongoDBService)
+        public BattleRoyaleController(MongoDBService mongoDBService, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _mongoDBService = mongoDBService;
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: api/<BattleRoyaleController>
         [HttpGet]
         public async Task<List<BattleRoyale>> Get()
         {
-            return await _mongoDBService.GetAsync();
+            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+            return await _mongoDBService.GetAsync(userId);
         }
 
         // GET api/<BattleRoyaleController>/5
@@ -37,6 +47,34 @@ namespace NET_Apex_Stats.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BattleRoyale battleRoyale)
         {
+            string userId = "";
+            if (Request.Headers.TryGetValue("Authorization", out var authorization))
+            {
+                string auth = authorization;
+                string token = "";
+                if (auth.StartsWith("bearer ")) token = auth.Substring(7);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value));
+                try
+                {
+                    tokenHandler.ValidateToken(token, new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key,
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero
+                    }, out SecurityToken validatedToken);
+                    var JwtToken = (JwtSecurityToken)validatedToken;
+                    userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+                }
+                catch
+                {
+                    return Unauthorized("Invalid or missing token");
+                }
+            }
+            battleRoyale.userId = userId;
             await _mongoDBService.CreateAsync(battleRoyale);
             return CreatedAtAction(nameof(Get), new { id = battleRoyale.Id, battleRoyale });
         }

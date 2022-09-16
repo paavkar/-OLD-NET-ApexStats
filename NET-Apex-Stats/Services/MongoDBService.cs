@@ -39,9 +39,10 @@ namespace NET_Apex_Stats.Services
             return user2;
         }
 
-        public async Task<List<BattleRoyale>> GetAsync()
+        public async Task<List<BattleRoyale>> GetAsync(string userId)
         {
-            return await _battleRoyaleCollection.Find(new BsonDocument()).ToListAsync();
+            FilterDefinition<BattleRoyale> filter = Builders<BattleRoyale>.Filter.Eq("userId", userId);
+            return await _battleRoyaleCollection.Find(filter).ToListAsync();
         }
 
 
