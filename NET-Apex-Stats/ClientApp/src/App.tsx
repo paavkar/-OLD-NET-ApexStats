@@ -54,7 +54,6 @@ React.useEffect(() => {
 
   return (
     <div className="App">
-      
       <Router>
         <Container>
           <Typography variant="h3" style={{ marginBottom: "0.5em" }}>
@@ -62,7 +61,7 @@ React.useEffect(() => {
           </Typography>
           {user.username === "" ? 
           <div>
-          <Button component={Link} to="/" variant="contained" color="primary">
+          <Button component={Link} to="/" variant="contained" color="primary" >
             Home
           </Button>
           <Button component={Link} to="/register" variant="contained" color="primary" style={{ marginLeft: "0.5em" }}>
@@ -76,10 +75,14 @@ React.useEffect(() => {
           </div>
              :
           <div>
-            <Button component={Link} to="/" variant="contained" color="primary">
-            Home
-            </Button>
-            <UserMenu />
+            <Container>
+              <div style={{ display:"flex" }}>
+                <Button component={Link} to="/" variant="contained" color="primary">
+                  Home
+                </Button>
+                <UserMenu />
+              </div>
+            </Container>
             <Routes>
               <Route path="/" element={<StatListPage />} />
             </Routes>

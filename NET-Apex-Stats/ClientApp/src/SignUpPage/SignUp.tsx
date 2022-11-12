@@ -131,7 +131,7 @@ export default function SignUp() {
         </Snackbar>
         <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
           <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            Error in account registering. Try a different username or password.
+            Error in account registering. Try using a different username or password. 
           </Alert>
         </Snackbar>
         <Copyright sx={{ mt: 5 }} />

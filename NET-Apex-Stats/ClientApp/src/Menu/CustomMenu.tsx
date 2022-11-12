@@ -5,7 +5,6 @@ import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PersonIcon from '@mui/icons-material/Person';
 import Divider from '@mui/material/Divider';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useStateValue } from '../state';
@@ -77,10 +76,9 @@ export default function CustomizedMenus() {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         variant="contained"
-        disableElevation
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
-        style={{ marginLeft: "0.5em" }}
+        style={{ marginLeft: "auto" }}
       >
       <PersonIcon /> {user.username}
       </Button>
