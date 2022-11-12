@@ -36,7 +36,8 @@ const theme = createTheme();
 
 export default function SignUp() {
   const [, dispatch] = useStateValue();
-  const [open, setOpen] = React.useState(false);
+  const [success, setOpen] = React.useState(false);
+  const [error, setError] = React.useState(false);
   const textInput = React.useRef("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -45,9 +46,12 @@ export default function SignUp() {
     try {
       const { data: user } = await axios.post<User>(`${apiBaseUrl}/Auth/register`, { username: data.get('username'), password: data.get('password') });
       dispatch({ type: "REGISTER_USER", payload: user});
+      setOpen(true);
     } catch (e) {
       console.error(e);
+      setError(true);
     }
+    
     //textInput.current = "";
     /*
     console.log({
@@ -63,6 +67,7 @@ export default function SignUp() {
     }
   
     setOpen(false);
+    setError(false);
   };
 
   return (
@@ -119,9 +124,14 @@ export default function SignUp() {
             </Button>
           </Box>
         </Box>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+          <Alert variant="filled" onClose={handleClose} severity="success" sx={{ width: '100%' }}>
             Account registered successfully!
+          </Alert>
+        </Snackbar>
+        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+          <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+            Error in account registering. Try a different username or password.
           </Alert>
         </Snackbar>
         <Copyright sx={{ mt: 5 }} />
