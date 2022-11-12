@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /NET-Apex-Stats/input.json
+/NET-Apex-Stats/ClientApp/public/favicona.ico
