@@ -18,7 +18,11 @@ export type Action =
   | {
       type: "REGISTER_USER";
       payload: User;
-    };
+    }
+  | {
+      type: "DELETE_ENTRY";
+      payload: string;
+      };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {

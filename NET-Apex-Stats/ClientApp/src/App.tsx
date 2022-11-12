@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Button, Divider, Container } from "@mui/material";
 import { Typography } from "@mui/material";
 
+
 import { apiBaseUrl } from "./constants";
 import { useStateValue } from "./state";
 import { Entry } from "./types";
@@ -11,32 +12,29 @@ import { Entry } from "./types";
 import StatListPage from "./StatListPge";
 import SignIn from './SignInPage/SignIn';
 import SignUp from './SignUpPage/SignUp';
+import UserMenu from './Menu/CustomMenu';
 
 
 function App() {
   const [ { user }, dispatch] = useStateValue();
 
-let token: string | null = null;
-
-
-const setToken = (newToken: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    token = `bearer ${newToken}`
- 
-};
-
 React.useEffect(() => {
-  const fetchUser = () => {
+  const fetchUserEntries = async () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       dispatch({ type: "SET_USER", payload: user });
-      setToken(user.token);
+      const { data: entryListFromApi } = await axios.get<Entry[]>(
+        `${apiBaseUrl}/BattleRoyale`, { headers: { Authorization: `bearer ${user.token}` },}
+      );
+      dispatch({ type: "SET_ENTRY_LIST", payload: entryListFromApi });
     };
   };
-  void fetchUser();
+  void fetchUserEntries();
+
 }, [dispatch]);
 
+/*
   React.useEffect(() => {
     //void axios.get<void>(`${apiBaseUrl}/ping`);
 
@@ -52,12 +50,7 @@ React.useEffect(() => {
     };
     void fetchEntryList();
   }, [dispatch]);
-
-  const logout = () => {
-    window.localStorage.removeItem('loggedUser');
-    dispatch({ type: "SET_USER", payload: { id: "", username: "", password: "", token: "" } });
-    token = null;
-  }
+  */
 
   return (
     <div className="App">
@@ -83,21 +76,15 @@ React.useEffect(() => {
           </div>
              :
           <div>
-            <Typography variant="h6" style={{ marginBottom: "0.5em" }}>
-            {user.username} is logged in
-          </Typography>
             <Button component={Link} to="/" variant="contained" color="primary">
             Home
             </Button>
-            <Button onClick={() => logout()} variant="contained" color="primary" style={{ marginLeft: "0.5em" }} >
-            Logout
-            </Button>
+            <UserMenu />
             <Routes>
               <Route path="/" element={<StatListPage />} />
             </Routes>
           </div>
           }
-          
         </Container>
       </Router>
     </div>

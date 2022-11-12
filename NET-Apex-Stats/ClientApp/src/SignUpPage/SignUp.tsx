@@ -16,6 +16,8 @@ import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { User } from '../types';
 import { useStateValue } from '../state/state';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 function Copyright(props: any) {
   return (
@@ -34,6 +36,7 @@ const theme = createTheme();
 
 export default function SignUp() {
   const [, dispatch] = useStateValue();
+  const [open, setOpen] = React.useState(false);
   const textInput = React.useRef("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -45,13 +48,21 @@ export default function SignUp() {
     } catch (e) {
       console.error(e);
     }
-    textInput.current = "";
+    //textInput.current = "";
     /*
     console.log({
       username: data.get('username'),
       password: data.get('password'),
     });
     */
+  };
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+  
+    setOpen(false);
   };
 
   return (
@@ -108,6 +119,11 @@ export default function SignUp() {
             </Button>
           </Box>
         </Box>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            Account registered successfully!
+          </Alert>
+        </Snackbar>
         <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>

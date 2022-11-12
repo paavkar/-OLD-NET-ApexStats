@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
         builder
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowAnyOrigin();
+        .WithOrigins("https://localhost:44484", "https://apex-stats.azurewebsites.net/");
     });
 });
 

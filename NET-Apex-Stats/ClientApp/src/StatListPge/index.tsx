@@ -44,6 +44,24 @@ const StatListPage = () => {
     }
   };
 
+  const handleDelete = (id: string) => {
+    try {
+      axios.delete<Entry>(
+        `${apiBaseUrl}/br/${id}`, 
+        { headers: { Authorization: `bearer ${user.token}` },}
+      );
+      dispatch({ type: "DELETE_ENTRY", payload: id });
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || "Unrecognized axios error");
+        setError(String(e?.response?.data?.error) || "Unrecognized axios error");
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
+    }
+  };
+
   return (
     <div className="App">
       <Box>
@@ -71,6 +89,14 @@ const StatListPage = () => {
               <TableCell>{entry.kills}</TableCell>
               <TableCell>{entry.kdr}</TableCell>
               <TableCell>{entry.avgDamage}</TableCell>
+              <TableCell align="center"> 
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleDelete(entry.id) }>
+                  Delete
+                </Button> 
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
