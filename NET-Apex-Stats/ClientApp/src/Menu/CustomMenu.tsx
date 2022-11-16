@@ -78,7 +78,7 @@ export default function CustomizedMenus() {
         variant="contained"
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
-        style={{ marginLeft: "auto" }}
+        style={{ marginLeft:"0.5em" }}
       >
       <PersonIcon /> {user.username}
       </Button>

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { Button, Divider, Container } from "@mui/material";
+import { Button, Divider, Container, AppBar, Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
 
 
@@ -56,33 +56,40 @@ React.useEffect(() => {
     <div className="App">
       <Router>
         <Container>
-          <Typography variant="h3" style={{ marginBottom: "0.5em" }}>
-            Apex Legends Stats
-          </Typography>
           {user.username === "" ? 
           <div>
-          <Button component={Link} to="/" variant="contained" color="primary" >
-            Home
-          </Button>
-          <Button component={Link} to="/register" variant="contained" color="primary" style={{ marginLeft: "0.5em" }}>
-            Sign up
-          </Button>
-          <Divider hidden />
-          <Routes>
-            <Route path="/" element={<SignIn />} />
-            <Route path="/register" element={<SignUp />} />
-          </Routes>
+            <AppBar position='relative'>
+              <Toolbar>
+                <Typography variant="h6" style={{ marginRight: "0.5em" }}>
+                  Apex Legends Stats
+                </Typography>
+                <Button component={Link} to="/" variant="contained" color="primary" >
+                  Login
+                </Button>
+                <Button component={Link} to="/register" variant="contained" color="primary" style={{ marginLeft: "0.5em" }}>
+                 Sign up
+                </Button>
+              </Toolbar>
+            </AppBar>
+            <Divider hidden />
+            <Routes>
+              <Route path="/" element={<SignIn />} />
+              <Route path="/register" element={<SignUp />} />
+            </Routes>
           </div>
-             :
+            :
           <div>
-            <Container>
-              <div style={{ display:"flex" }}>
+            <AppBar position='relative'>
+              <Toolbar>
+                <Typography variant="h6" style={{ marginRight: "0.5em" }}>
+                  Apex Legends Stats
+                </Typography>
                 <Button component={Link} to="/" variant="contained" color="primary">
                   Home
                 </Button>
                 <UserMenu />
-              </div>
-            </Container>
+              </Toolbar>
+            </AppBar>
             <Routes>
               <Route path="/" element={<StatListPage />} />
             </Routes>
