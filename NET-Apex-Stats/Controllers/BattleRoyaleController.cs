@@ -89,8 +89,21 @@ namespace NET_Apex_Stats.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            await _mongoDBService.DeleteAsync(id);
-            return NoContent();
+            string userId = "";
+            if (Request.Headers.TryGetValue("Authorization", out var authorization))
+            {
+                try
+                {
+                    userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+                }
+                catch
+                {
+                    return Unauthorized("Invalid or missing token");
+                }
+                await _mongoDBService.DeleteAsync(id, userId);
+                return NoContent();
+            }
+            return Unauthorized();
         }
     }
 }

@@ -46,10 +46,16 @@ namespace NET_Apex_Stats.Services
         }
 
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id, string userId)
         {
             FilterDefinition<BattleRoyale> filter = Builders<BattleRoyale>.Filter.Eq("Id", id);
-            await _battleRoyaleCollection.DeleteOneAsync(filter);
+            var findEntry = _battleRoyaleCollection.Find(filter);
+            var entryToDelete = findEntry.First();
+            if (entryToDelete != null && entryToDelete.userId == userId)
+            {
+                await _battleRoyaleCollection.DeleteOneAsync(filter);
+                return;
+            }
             return;
         }
     }
