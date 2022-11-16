@@ -124,12 +124,12 @@ export default function SignUp() {
             </Button>
           </Box>
         </Box>
-        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+        <Snackbar open={success} autoHideDuration={5000} onClose={handleClose}>
           <Alert variant="filled" onClose={handleClose} severity="success" sx={{ width: '100%' }}>
             Account registered successfully!
           </Alert>
         </Snackbar>
-        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+        <Snackbar open={error} autoHideDuration={5000} onClose={handleClose}>
           <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: '100%' }}>
             Error in account registering. Try using a different username or password. 
           </Alert>
