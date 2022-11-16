@@ -50,33 +50,19 @@ namespace NET_Apex_Stats.Controllers
             string userId = "";
             if (Request.Headers.TryGetValue("Authorization", out var authorization))
             {
-                string auth = authorization;
-                string token = "";
-                if (auth.StartsWith("bearer ")) token = auth.Substring(7);
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value));
                 try
                 {
-                    tokenHandler.ValidateToken(token, new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = key,
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ClockSkew = TimeSpan.Zero
-                    }, out SecurityToken validatedToken);
-                    var JwtToken = (JwtSecurityToken)validatedToken;
                     userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+                    battleRoyale.userId = userId;
+                    await _mongoDBService.CreateAsync(battleRoyale);
+                    return CreatedAtAction(nameof(Get), new { id = battleRoyale.Id, battleRoyale });
                 }
                 catch
                 {
                     return Unauthorized("Invalid or missing token");
                 }
             }
-            battleRoyale.userId = userId;
-            await _mongoDBService.CreateAsync(battleRoyale);
-            return CreatedAtAction(nameof(Get), new { id = battleRoyale.Id, battleRoyale });
+            return Unauthorized("Invalid or missing token");
         }
 
         // PUT api/<BattleRoyaleController>/5
@@ -95,15 +81,15 @@ namespace NET_Apex_Stats.Controllers
                 try
                 {
                     userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+                    await _mongoDBService.DeleteAsync(id, userId);
+                    return NoContent();
                 }
                 catch
                 {
                     return Unauthorized("Invalid or missing token");
                 }
-                await _mongoDBService.DeleteAsync(id, userId);
-                return NoContent();
             }
-            return Unauthorized();
+            return Unauthorized("Invalid or missing token");
         }
     }
 }

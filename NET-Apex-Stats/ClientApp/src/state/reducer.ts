@@ -22,7 +22,7 @@ export type Action =
   | {
       type: "DELETE_ENTRY";
       payload: string;
-      };
+    };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -33,8 +33,7 @@ export const reducer = (state: State, action: Action): State => {
           ...action.payload.reduce(
             (memo, entry) => ({ ...memo, [entry.id]: entry }),
             {}
-          ),
-          ...state.entries
+          )
         }
       };
     case "ADD_ENTRY":

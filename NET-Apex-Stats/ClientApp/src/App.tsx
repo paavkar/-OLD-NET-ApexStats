@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Button, Divider, Container, AppBar, Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
 
-
 import { apiBaseUrl } from "./constants";
 import { useStateValue } from "./state";
 import { Entry } from "./types";
