@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useStateValue } from '../state';
+import { Entry } from '../types';
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu

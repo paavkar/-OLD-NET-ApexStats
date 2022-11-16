@@ -15,7 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { useStateValue } from '../state/state';
-import { User } from "../types";
+import { Entry, User } from "../types";
 
 function Copyright(props: any) {
   return (
@@ -44,6 +44,10 @@ export default function SignIn() {
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
+      const { data: entryListFromApi } = await axios.get<Entry[]>(
+        `${apiBaseUrl}/BattleRoyale`, { headers: { Authorization: `bearer ${user.token}` },}
+      );
+      dispatch({ type: "SET_ENTRY_LIST", payload: entryListFromApi });
     } catch (e) {
       console.error(e);
     }
