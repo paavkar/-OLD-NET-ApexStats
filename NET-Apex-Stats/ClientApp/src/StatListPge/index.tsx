@@ -1,14 +1,22 @@
 import React from "react";
 import axios from "axios";
-import { Box, Table, Button, TableHead, Typography } from "@mui/material";
+import { 
+  Box,
+  Table,
+  Button,
+  TableHead,
+  Typography,
+  TableCell,
+  TableRow, 
+  Snackbar,
+  Alert
+} from "@mui/material";
 
 import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 import AddEntryModal from "../AddEntryModal";
 import { Entry } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from "../state";
-import { TableCell } from "@mui/material";
-import { TableRow } from "@mui/material";
 import { TableBody } from "@mui/material";
 
 
@@ -17,6 +25,8 @@ const StatListPage = () => {
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>();
+  const [deletionSuccess, setDeletionSuccess] = React.useState(false);
+  const [deletionError, setDeletionError] = React.useState(false);
 
   const openModal = (): void => setModalOpen(true);
 
@@ -47,10 +57,11 @@ const StatListPage = () => {
   const handleDelete = (id: string) => {
     try {
       axios.delete<Entry>(
-        `${apiBaseUrl}/br/${id}`, 
+        `${apiBaseUrl}/Battleroyale/${id}`, 
         { headers: { Authorization: `bearer ${user.token}` },}
       );
       dispatch({ type: "DELETE_ENTRY", payload: id });
+      setDeletionSuccess(true);
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         console.error(e?.response?.data || "Unrecognized axios error");
@@ -58,8 +69,18 @@ const StatListPage = () => {
       } else {
         console.error("Unknown error", e);
         setError("Unknown error");
+        setDeletionError(true);
       }
     }
+  };
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    
+    setDeletionSuccess(false);
+    setDeletionError(false);
   };
 
   return (
@@ -78,6 +99,7 @@ const StatListPage = () => {
             <TableCell>Kills</TableCell>
             <TableCell>KD/R</TableCell>
             <TableCell>Average Damage</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -91,7 +113,7 @@ const StatListPage = () => {
               <TableCell>{entry.avgDamage}</TableCell>
               <TableCell align="center"> 
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="error"
                   onClick={() => handleDelete(entry.id) }>
                   Delete
@@ -110,6 +132,16 @@ const StatListPage = () => {
       <Button variant="contained" onClick={() => openModal()}>
         Add New Entry
       </Button>
+      <Snackbar open={deletionSuccess} autoHideDuration={5000} onClose={handleClose}>
+        <Alert variant="filled" onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Entry deleted successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={deletionError} autoHideDuration={5000} onClose={handleClose}>
+        <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          Error in deleting the entry. 
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
