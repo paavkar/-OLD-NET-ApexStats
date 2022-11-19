@@ -12,6 +12,7 @@ import StatListPage from "./StatListPge";
 import SignIn from './SignInPage/SignIn';
 import SignUp from './SignUpPage/SignUp';
 import UserMenu from './Menu/CustomMenu';
+import { Copyright } from './Copyright/Copyright';
 
 
 function App() {
@@ -92,6 +93,7 @@ React.useEffect(() => {
             <Routes>
               <Route path="/" element={<StatListPage />} />
             </Routes>
+            <Copyright sx={{ mt: 5 }} />
           </div>
           }
         </Container>

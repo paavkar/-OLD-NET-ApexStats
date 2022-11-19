@@ -35,6 +35,16 @@ namespace NET_Apex_Stats.Controllers
                 return BadRequest("Username must be unique");
             }
 
+            if(username.Length < 3 || username.Length > 30)
+            {
+                return BadRequest("Username has to be between 3 and 30 characters long");
+            }
+
+            if(password.Length < 8)
+            {
+                return BadRequest("Password has to be at least 8 characters long");
+            }
+
             int saltRounds = 10;
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password, saltRounds);
